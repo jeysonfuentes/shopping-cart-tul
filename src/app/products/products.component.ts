@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Product } from 'src/core/models/product.model';
 import { AppStateProduct, ProductState } from './state/product.model';
-import * as ProductActions from './state';
+import * as ProductActions from './state';}
+import * as ShoppingCartActions from '../shopping-cart/state/';
+import { AppStateShoppingCart } from '../shopping-cart/state/shopping-cart.model';
 
 @Component({
   selector: 'app-products',
@@ -11,26 +13,26 @@ import * as ProductActions from './state';
 })
 export class ProductsComponent implements OnInit {
   products: Product[] = [];
-  constructor(private store: Store<AppStateProduct>) {
+  constructor(private storeProduct: Store<AppStateProduct>, private storeShopping: Store<AppStateShoppingCart>) {
 
   }
 
   ngOnInit(): void {
-    this.store.select('product').subscribe((productsState) => {
+    this.storeProduct.select('product').subscribe((productsState) => {
       this.products = productsState?.products ?? [];
     });
     this.getProducts();
   }
 
   getProducts() {
-    this.store.dispatch(ProductActions.GetProducts());
+    this.storeProduct.dispatch(ProductActions.GetProducts());
   }
 
   hasProducts() {
     return this.products?.length;
   }
 
-  addToCart(event) {
-    console.log(event)
+  addToCart(productId, product: Product) {
+    // this.storeShopping.dispatch(ShoppingCartActions.AddProductCart, productId);
   }
 }
