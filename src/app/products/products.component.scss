@@ -1,0 +1,26 @@
+.products {
+  padding: 10px 15px;
+  &__list {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    align-items: baseline;
+  }
+  &__skeleton {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    & nz-skeleton {
+      margin: 5px 10px;
+      background-color: #fff;
+      padding: 8px;
+    }
+  }
+  &__paginator {
+    margin-top: 10px;
+    padding: 15px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

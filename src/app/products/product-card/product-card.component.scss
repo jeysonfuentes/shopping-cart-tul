@@ -1,0 +1,33 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  margin: 5px 10px;
+  width: 200px;
+  background-color: #fff;
+  &__image {
+    width: 100%;
+    height: 150px;
+    margin-top: 10px
+  }
+  &__content {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+  &__title {
+    border-bottom: 1px solid #1e293b;
+  }
+  &__code {
+    color: #94a3b8;
+    font-style: italic;
+  }
+  &__price {
+    color: #2563eb;
+    font-size: 15px;
+  }
+  &__actions {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+  }
+}

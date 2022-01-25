@@ -1,0 +1,17 @@
+<div class="wrapper">
+  <div class="products">
+    <div class="products__list">
+      <app-product-card *ngFor="let product of products" [product]="product" (addProduct)="addToCart($event)"></app-product-card>
+    </div>
+    <div class="products__skeleton" *ngIf="!hasProducts()">
+      <nz-skeleton [nzTitle]="true" [nzParagraph]="{ rows: 4 } " [nzActive]="true"></nz-skeleton>
+      <nz-skeleton [nzTitle]="true" [nzParagraph]="{ rows: 4 } " [nzActive]="true"></nz-skeleton>
+      <nz-skeleton [nzTitle]="true" [nzParagraph]="{ rows: 4 } " [nzActive]="true"></nz-skeleton>
+      <nz-skeleton [nzTitle]="true" [nzParagraph]="{ rows: 4 } " [nzActive]="true"></nz-skeleton>
+    </div>
+    <div class="products__paginator">
+      <nz-pagination [nzPageIndex]="1" [nzTotal]="products?.length" [nzPageSize]="3" [nzShowTotal]="rangeTemplate"></nz-pagination>
+      <ng-template #rangeTemplate let-range="range" let-total> {{ range[0] }}-{{ range[1] }} of {{ total }} products </ng-template>
+    </div>
+  </div>
+</div>

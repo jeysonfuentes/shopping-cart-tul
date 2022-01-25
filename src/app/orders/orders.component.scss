@@ -1,0 +1,20 @@
+.orders {
+  padding: 10px 15px;
+  &__list {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+  }
+  &__list-header {
+    display: flex;
+    justify-content: space-around
+  }
+  &__list-item {
+    background-color: #fff;
+    display: flex;
+    justify-content: space-around;
+    align-items: baseline;
+    padding: 10px 15px;
+    margin-top: 10px
+  }
+}

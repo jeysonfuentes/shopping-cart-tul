@@ -1,0 +1,13 @@
+<div class="card">
+  <img class="card__image" [src]="product.image" alt="producto1">
+  <div class="card__content">
+    <h3 class="card__title">{{product.name}}</h3>
+    <span class="card__code">SKU: {{product.sku}}</span>
+    <p class="card__description">{{product.description}}</p>
+    <p>price: <span class="card__price">{{product.price | currency}}</span></p>
+  </div>
+  <div class="card__actions">
+    <button nz-button nzType="primary" (click)="addToCart(product)"><i nz-icon nzType="search"></i>Add to
+      cart</button>
+  </div>
+</div>
