@@ -28,6 +28,10 @@ export class AuthService {
     );
   }
 
+  signOut() {
+    return from(this.firebaseAuth.signOut());
+  }
+
   getCurrentUser() {
     return JSON.parse(localStorage.getItem('currentUser'));
   }

@@ -26,10 +26,7 @@ export class AuthEffects {
               uid: response.user.uid,
             };
             if (remenberMe) {
-              localStorage.setItem(
-                'currentUser',
-                JSON.stringify(user)
-              );
+              localStorage.setItem('currentUser', JSON.stringify(user));
             }
             return user;
           }),
@@ -37,11 +34,6 @@ export class AuthEffects {
             return authActions.LoginUserSuccess({ user });
           }),
           catchError((error) => {
-            // this.loadingService.dismiss();
-            // this.alertService.showInfoAlert(
-            //   'Error',
-            //   'El email no coincide con la contraseña. Revisa que has introducido los datos correctamente'
-            // );
             return of(authActions.LoginUserError({ error }));
           })
         )
@@ -51,7 +43,7 @@ export class AuthEffects {
 
   singUp$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(authActions.SingUpUser),
+      ofType(authActions.SignUpUser),
       mergeMap(({ credentials }) =>
         this.authService.emailSignup(credentials).pipe(
           map(() =>
@@ -64,12 +56,24 @@ export class AuthEffects {
             })
           ),
           catchError((error) => {
-            // this.loadingService.dismiss();
-            // this.alertService.showInfoAlert(
-            //   'Error',
-            //   'El correo ya se encuentra registrado'
-            // );
             return of(authActions.LoginUserError({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  logOut$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(authActions.LogOut),
+      mergeMap(() =>
+        this.authService.signOut().pipe(
+          map(() => {
+            localStorage.removeItem('currentUser');
+            return authActions.LogOutSuccess();
+          }),
+          catchError((error) => {
+            return of(authActions.LogOutError({ error }));
           })
         )
       )

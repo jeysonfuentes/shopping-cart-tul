@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { BaseComponent } from 'src/core/components/base.component';
 import { Cart } from 'src/core/models/cart.model';
 import { ProductCart } from 'src/core/models/product-cart.model';
 import { AppState } from '../state/app.model';
@@ -9,11 +10,13 @@ import * as ShoppingCartActions from './state';
   templateUrl: './shopping-cart.component.html',
   styleUrls: ['./shopping-cart.component.scss'],
 })
-export class ShoppingCartComponent implements OnInit {
+export class ShoppingCartComponent extends BaseComponent implements OnInit  {
   cart: Cart = null;
   productsCart: ProductCart[] = [];
   totalCart = 0;
-  constructor(private store: Store<AppState>) {}
+  constructor(private store: Store<AppState>) {
+    super();
+  }
 
   ngOnInit(): void {
     this.store.select('shoppingCart').subscribe(({ cart, productsCart }) => {

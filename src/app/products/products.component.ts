@@ -10,13 +10,15 @@ import { User } from 'src/core/models/user.model';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Router } from '@angular/router';
 import { Cart } from 'src/core/models/cart.model';
+import { BaseComponent } from 'src/core/components/base.component';
+import { Subscriber } from 'rxjs';
 
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss'],
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent extends BaseComponent implements OnInit {
   products: Product[] = [];
   currentUser: User = null;
   private cart: Cart = null;
@@ -25,14 +27,23 @@ export class ProductsComponent implements OnInit {
     private store: Store<AppStateProduct>,
     private modal: NzModalService,
     private router: Router
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.store.select('product').subscribe(({ products }) => {
       this.products = products;
     });
     this.store.select('auth').subscribe(({ currentUser }) => {
-      this.currentUser = currentUser;
+      if (currentUser) {
+        this.currentUser = currentUser;
+      } else {
+        const localUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (localUser) {
+          this.currentUser = localUser;
+        }
+      }
     });
 
     this.store.select('shoppingCart').subscribe(({ cart, productsCart }) => {

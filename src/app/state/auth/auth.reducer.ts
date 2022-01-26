@@ -11,10 +11,13 @@ const _authReducer = createReducer(
   on(authActions.LoginUser, _loginUser()),
   on(authActions.LoginUserSuccess, _loginUserSuccess()),
   on(authActions.LoginUserError, _loginUserError()),
-  on(authActions.SingUpUser, _singUpUser()),
-  on(authActions.SingUpUserSuccess, _singUpUserSuccess()),
-  on(authActions.SingUpUserError, _singUpUserError()),
-  on(authActions.SingOutUser, _singOutUser())
+  on(authActions.SignUpUser, _signUpUser()),
+  on(authActions.SignUpUserSuccess, _signUpUserSuccess()),
+  on(authActions.SignUpUserError, _signUpUserError()),
+  on(authActions.LogOut, _logOut()),
+  on(authActions.LogOutSuccess, _logOutSuccess()),
+  on(authActions.LogOutError, _logOutError()),
+
 );
 
 export function authReducer(state: AuthAppState, action: any) {
@@ -49,7 +52,7 @@ function _loginUserError() {
   });
 }
 
-function _singUpUser() {
+function _signUpUser() {
   return (state) => ({
     ...state,
     loading: true,
@@ -57,7 +60,7 @@ function _singUpUser() {
   });
 }
 
-function _singUpUserSuccess() {
+function _signUpUserSuccess() {
   return (state, { user }) => ({
     ...state,
     loading: false,
@@ -66,7 +69,7 @@ function _singUpUserSuccess() {
   });
 }
 
-function _singUpUserError() {
+function _signUpUserError() {
   return (state, { error }) => ({
     ...state,
     loading: false,
@@ -75,10 +78,30 @@ function _singUpUserError() {
   });
 }
 
-function _singOutUser() {
+function _logOut() {
   return (state: AuthAppState): AuthAppState => ({
     ...state,
+    loading: true,
+    loaded: false,
+  });
+}
+
+function _logOutSuccess() {
+  return (state) => ({
+    ...state,
     currentUser: null,
+    loading: false,
+    loaded: true,
+    error: null,
+  });
+}
+
+function _logOutError() {
+  return (state, { error }) => ({
+    ...state,
+    loading: false,
+    loaded: true,
+    error,
   });
 }
 

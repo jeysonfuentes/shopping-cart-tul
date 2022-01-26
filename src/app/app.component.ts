@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { IMenuItem } from './app.interface';
 import { AppState } from './state/app.model';
@@ -27,7 +28,7 @@ export class AppComponent implements OnInit {
   ];
   nickName = '';
   hasLogged = false;
-  constructor(private store: Store<AppState>) {}
+  constructor(private store: Store<AppState>, private router: Router) {}
   ngOnInit(): void {
     this.store.select('auth').subscribe(({ currentUser }) => {
       if (currentUser) {
@@ -44,7 +45,7 @@ export class AppComponent implements OnInit {
   }
 
   logOut() {
-    localStorage.removeItem('currentUser');
-    // this.store.dispatch(AuthActions.LogOut());
+    this.store.dispatch(AuthActions.LogOut());
+    this.router.navigateByUrl('/products');
   }
 }

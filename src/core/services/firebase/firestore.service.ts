@@ -52,9 +52,18 @@ export class FirestoreService<T> implements IFirestoreService<T> {
   getByQueryFields(queryFields: QueryFields[]) {
     return this.database
       .collection(`${this.collection}`, (ref) => {
-        queryFields.forEach((query) => {
-          ref.where(query.field, query.predicate, query.value);
-        });
+        ref
+          .where(
+            queryFields[0].field,
+            queryFields[0].predicate,
+            queryFields[0].value
+          )
+          .where(
+            queryFields[1].field,
+            queryFields[1].predicate,
+            queryFields[1].value
+          );
+
         return ref;
       })
       .valueChanges();
