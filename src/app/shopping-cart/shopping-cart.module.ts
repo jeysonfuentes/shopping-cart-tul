@@ -6,9 +6,7 @@ import { ShoppingCartComponent } from './shopping-cart.component';
 
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { ShoppingCartEffectsArray, shoppingCartReducer } from './state';
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 @NgModule({
   declarations: [
     ShoppingCartComponent
@@ -18,8 +16,7 @@ import { EffectsModule } from '@ngrx/effects';
     ShoppingCartRoutingModule,
     NzListModule,
     NzIconModule,
-    StoreModule.forFeature('shoppingCart', shoppingCartReducer),
-    EffectsModule.forFeature(ShoppingCartEffectsArray),
+    NzSkeletonModule,
   ]
 })
 export class ShoppingCartModule { }

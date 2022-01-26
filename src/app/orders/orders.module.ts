@@ -8,6 +8,9 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { OrdersDetailComponent } from './orders-detail/orders-detail.component';
 
 import { NzListModule } from 'ng-zorro-antd/list';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { OrdersEffectsArray, ordersReducer } from './state';
 @NgModule({
   declarations: [
     OrdersComponent,
@@ -17,7 +20,9 @@ import { NzListModule } from 'ng-zorro-antd/list';
     CommonModule,
     OrdersRoutingModule,
     NzIconModule,
-    NzListModule
+    NzListModule,
+    StoreModule.forFeature('orders', ordersReducer),
+    EffectsModule.forFeature(OrdersEffectsArray),
   ]
 })
 export class OrdersModule { }

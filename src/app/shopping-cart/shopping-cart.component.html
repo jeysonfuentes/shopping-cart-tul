@@ -1,33 +1,41 @@
 <div class="detail">
-  <h1 class="detail__title">Order #1</h1>
+  <h1 class="detail__title">My Order</h1>
   <div class="detail__content">
     <nz-list class="demo-loadmore-list" [nzLoading]="false">
-      <nz-list-item >
-        <ng-container >
-          <nz-list-item-meta
-            nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-            nzDescription="Ant Design, a design language for background applications, is refined by Ant UED Team"
-          >
+      <nz-list-item *ngFor="let productCart of productsCart">
+        <ng-container>
+          <nz-list-item-meta [nzDescription]="productCart.productName">
             <nz-list-item-meta-title>
-              Producto 1
+              {{productCart.price | currency: "$":"symbol":"1.0-0"}}
             </nz-list-item-meta-title>
           </nz-list-item-meta>
           <div>
-            <span><i nz-icon nzType="plus" nzTheme="outline"></i></span>
-            <span>1</span>
-            <span><i nz-icon nzType="minus" nzTheme="outline"></i></span>
+            <span><a (click)="incrementQuantity(productCart)"><i nz-icon nzType="plus" nzTheme="outline"></i></a></span>
+            <span>{{productCart.quantity}}</span>
+            <span><a (click)="decreaseQuantity(productCart)"><i nz-icon nzType="minus" nzTheme="outline"></i></a></span>
           </div>
           <ul nz-list-item-actions>
-            <nz-list-item-action><a><i nz-icon nzType="delete" nzTheme="outline"></i></a></nz-list-item-action>
+            <nz-list-item-action><a (click)="removeProductCart(productCart.id)"><i nz-icon nzType="delete" nzTheme="outline"></i></a></nz-list-item-action>
           </ul>
         </ng-container>
-        <nz-skeleton *ngIf="false" [nzAvatar]="true" [nzActive]="true" [nzTitle]="false" [nzLoading]="true"> </nz-skeleton>
       </nz-list-item>
+      <div *ngIf="!hasProductsCart()">
+        <nz-skeleton  [nzActive]="true" [nzTitle]="true" [nzLoading]="true" >
+        </nz-skeleton>
+        <nz-skeleton [nzActive]="true" [nzTitle]="true" [nzLoading]="true" >
+        </nz-skeleton>
+        <nz-skeleton [nzActive]="true" [nzTitle]="true" [nzLoading]="true" >
+        </nz-skeleton>
+      </div>
+
     </nz-list>
   </div>
   <div class="detail__footer">
     <h3>Total</h3>
-    <p>$ 1234.00</p>
+    <p>{{totalCart | currency: "$":"symbol":"1.0-0" }}</p>
+  </div>
+  <div class="detail__footer">
+    <button nz-button nzType="primary" (click)="createOrder()" [disabled]="!hasProductsCart()">Create Order</button>
+
   </div>
 </div>
-

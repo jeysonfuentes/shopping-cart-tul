@@ -6,6 +6,7 @@ import {
   CollectionReference,
   DocumentData,
 } from '@angular/fire/firestore';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +28,7 @@ export class FirestoreService<T> implements IFirestoreService<T> {
     itemToAdd.id = this.database.createId();
     console.log('itemToCreate', itemToAdd);
     const ref = this.database.doc<T>(`${this.collection}/${itemToAdd.id}`);
-    return from(ref.set(itemToAdd));
+    return from(ref.set(itemToAdd)).pipe(map(() => itemToAdd));
   }
   update(id: string, item: T): Observable<void> {
     const itemToUpdate = this.database.doc<T>(`${this.collection}/${id}`);
@@ -52,7 +53,7 @@ export class FirestoreService<T> implements IFirestoreService<T> {
     return this.database
       .collection(`${this.collection}`, (ref) => {
         queryFields.forEach((query) => {
-          this.setQueryField(ref, query);
+          ref.where(query.field, query.predicate, query.value);
         });
         return ref;
       })
@@ -70,11 +71,7 @@ export class FirestoreService<T> implements IFirestoreService<T> {
     collectionReference: CollectionReference<DocumentData>,
     queryField: QueryFields
   ) {
-    collectionReference.where(
-      queryField.field,
-      queryField.predicate,
-      queryField.value
-    );
+    return collectionReference;
   }
 
   private firebaseSerialize<T>(object: T) {

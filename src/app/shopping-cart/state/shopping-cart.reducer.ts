@@ -37,7 +37,19 @@ const _shoppingCartReducer = createReducer(
   on(shoppingCartActions.RemoveProductCartFailure, _removeProductCartFailure()),
   on(shoppingCartActions.UpdateProductCart, _updateProductCart()),
   on(shoppingCartActions.UpdateProductCartSuccess, _updateProductCartSuccess()),
-  on(shoppingCartActions.UpdateProductCartFailure, _updateProductCartFailure())
+  on(shoppingCartActions.UpdateProductCartFailure, _updateProductCartFailure()),
+  on(
+    shoppingCartActions.AddProductCartWhenNotExistShoppingCart,
+    _addProductCartWhenNotExistShoppingCart()
+  ),
+  on(
+    shoppingCartActions.AddProductCartWhenNotExistShoppingCartSuccess,
+    _addProductCartWhenNotExistShoppingCartSuccess()
+  ),
+  on(
+    shoppingCartActions.AddProductCartWhenNotExistShoppingCartFailure,
+    _addProductCartWhenNotExistShoppingCartFailure()
+  )
 );
 
 export function shoppingCartReducer(state: ShoppingCartState, action: any) {
@@ -143,6 +155,34 @@ function _getProductsCartSuccess() {
 }
 
 function _getProductsCartFailure() {
+  return (state, error) => ({
+    ...state,
+    loading: false,
+    loaded: false,
+    error,
+  });
+}
+
+function _addProductCartWhenNotExistShoppingCart() {
+  return (state) => ({
+    ...state,
+    loading: true,
+  });
+}
+
+function _addProductCartWhenNotExistShoppingCartSuccess() {
+  return (state, { cart, productCart }) => {
+    return {
+      ...state,
+      cart,
+      productsCart: [...state.productsCart].push(productCart),
+      loading: false,
+      loaded: true,
+    };
+  };
+}
+
+function _addProductCartWhenNotExistShoppingCartFailure() {
   return (state, error) => ({
     ...state,
     loading: false,

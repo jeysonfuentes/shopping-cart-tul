@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { Cart } from 'src/core/models/cart.model';
+import { ProductCart } from 'src/core/models/product-cart.model';
 import { CartsService } from 'src/core/services/carts/carts.service';
 import { ProductsCartService } from 'src/core/services/products-cart/products-cart.service';
 import * as shoppingCartActions from './shopping-cart.actions';
@@ -20,10 +21,51 @@ export class ShoppingCartEffects {
       mergeMap((action) =>
         this.cartService.getUserCart().pipe(
           map((result: Cart[]) =>
-          shoppingCartActions.GetShoppingCartSuccess({ cart: result[0] })
+            !result.length
+              ? shoppingCartActions.AddShoppingCart()
+              : shoppingCartActions.GetShoppingCartSuccess({ cart: result[0] })
           ),
           catchError((err) =>
             of(shoppingCartActions.GetShoppingCartFailure({ error: err }))
+          )
+        )
+      )
+    )
+  );
+
+  addProductCartWhenNotExistShoppingCart = createEffect(() =>
+    this.actions$.pipe(
+      ofType(shoppingCartActions.AddProductCartWhenNotExistShoppingCart),
+      mergeMap((action) =>
+        this.cartService.addCart().pipe(
+          switchMap((cart) => {
+            const productCart: ProductCart = {
+              cartId: cart.id,
+              productId: action.product.id,
+              productName: action.product.name,
+              price: action.product.price,
+              quantity: 1,
+              total: action.product.price * 1,
+            };
+            return this.productsCartService.addProductCart(productCart).pipe(
+              map((productCart) => ({
+                productCart,
+                cart,
+              }))
+            );
+          }),
+          map(({ productCart, cart }) =>
+            shoppingCartActions.AddProductCartWhenNotExistShoppingCartSuccess({
+              cart,
+              productCart,
+            })
+          ),
+          catchError((err) =>
+            of(
+              shoppingCartActions.AddProductCartWhenNotExistShoppingCartFailure(
+                { error: err }
+              )
+            )
           )
         )
       )
@@ -35,9 +77,7 @@ export class ShoppingCartEffects {
       ofType(shoppingCartActions.AddShoppingCart),
       mergeMap((action) =>
         this.cartService.addCart().pipe(
-          map((cart) =>
-          shoppingCartActions.AddShoppingCartSuccess({ cart })
-          ),
+          map((cart) => shoppingCartActions.AddShoppingCartSuccess({ cart })),
           catchError((err) =>
             of(shoppingCartActions.AddShoppingCartFailure({ error: err }))
           )
@@ -51,13 +91,20 @@ export class ShoppingCartEffects {
       ofType(shoppingCartActions.CompleteShoppingCart),
       mergeMap((action) =>
         this.cartService.changeCartStatus('complete', action.cart).pipe(
-          map(() =>
-            shoppingCartActions.CompleteShoppingCartSuccess()
-          ),
+          map(() => shoppingCartActions.CompleteShoppingCartSuccess()),
           catchError((err) =>
             of(shoppingCartActions.CompleteShoppingCartFailure({ error: err }))
           )
         )
+      )
+    )
+  );
+
+  onGetShoppingCartSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(shoppingCartActions.GetShoppingCartSuccess),
+      map((action) =>
+        shoppingCartActions.GetProductsCart({ cartId: action.cart.id })
       )
     )
   );
@@ -68,7 +115,9 @@ export class ShoppingCartEffects {
       mergeMap((action) =>
         this.productsCartService.getProductsCart(action.cartId).pipe(
           map((products) =>
-            shoppingCartActions.GetProductsCartSuccess({ productsCart: products })
+            shoppingCartActions.GetProductsCartSuccess({
+              productsCart: products,
+            })
           ),
           catchError((err) =>
             of(shoppingCartActions.GetProductsCartFailure({ error: err }))
@@ -85,7 +134,8 @@ export class ShoppingCartEffects {
         this.productsCartService.addProductCart(action.productCart).pipe(
           map((result) =>
             shoppingCartActions.AddProductCartSuccess({
-              productCart: result })
+              productCart: result,
+            })
           ),
           catchError((err) =>
             of(shoppingCartActions.AddProductCartFailure({ error: err }))
@@ -100,9 +150,7 @@ export class ShoppingCartEffects {
       ofType(shoppingCartActions.RemoveProductCart),
       mergeMap((action) =>
         this.productsCartService.deleteProductCart(action.productCartId).pipe(
-          map((id) =>
-            shoppingCartActions.RemoveProductCartSuccess()
-          ),
+          map((id) => shoppingCartActions.RemoveProductCartSuccess()),
           catchError((err) =>
             of(shoppingCartActions.RemoveProductCartFailure({ error: err }))
           )
@@ -116,9 +164,7 @@ export class ShoppingCartEffects {
       ofType(shoppingCartActions.UpdateProductCart),
       mergeMap((action) =>
         this.productsCartService.updateProductCart(action.productCart).pipe(
-          map(() =>
-            shoppingCartActions.UpdateProductCartSuccess()
-          ),
+          map(() => shoppingCartActions.UpdateProductCartSuccess()),
           catchError((err) =>
             of(shoppingCartActions.UpdateProductCartFailure({ error: err }))
           )

@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 @NgModule({
   declarations: [
     LoginComponent,
@@ -22,7 +23,8 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
     NzFormModule,
     NzInputModule,
     NzButtonModule,
-    NzCheckboxModule
+    NzCheckboxModule,
+    NzGridModule
   ]
 })
 export class AuthModule { }

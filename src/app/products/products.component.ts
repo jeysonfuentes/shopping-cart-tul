@@ -1,3 +1,4 @@
+import { ProductCart } from 'src/core/models/product-cart.model';
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Product } from 'src/core/models/product.model';
@@ -5,6 +6,10 @@ import { AppStateProduct, ProductState } from './state/product.model';
 import * as ProductActions from './state';
 import * as ShoppingCartActions from '../shopping-cart/state/';
 import { AppStateShoppingCart } from '../shopping-cart/state/shopping-cart.model';
+import { User } from 'src/core/models/user.model';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { Router } from '@angular/router';
+import { Cart } from 'src/core/models/cart.model';
 
 @Component({
   selector: 'app-products',
@@ -13,20 +18,35 @@ import { AppStateShoppingCart } from '../shopping-cart/state/shopping-cart.model
 })
 export class ProductsComponent implements OnInit {
   products: Product[] = [];
+  currentUser: User = null;
+  private cart: Cart = null;
+  private productsCart: ProductCart[];
   constructor(
-    private storeProduct: Store<AppStateProduct>,
-    private storeShopping: Store<AppStateShoppingCart>
+    private store: Store<AppStateProduct>,
+    private modal: NzModalService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.storeProduct.select('product').subscribe((productsState) => {
-      this.products = productsState?.products ?? [];
+    this.store.select('product').subscribe(({ products }) => {
+      this.products = products;
+    });
+    this.store.select('auth').subscribe(({ currentUser }) => {
+      this.currentUser = currentUser;
+    });
+
+    this.store.select('shoppingCart').subscribe(({ cart, productsCart }) => {
+      this.cart = cart;
+      this.productsCart = productsCart;
     });
     this.getProducts();
+    if (this.currentUser) {
+      this.store.dispatch(ShoppingCartActions.GetShoppingCart());
+    }
   }
 
-  getProducts() {
-    this.storeProduct.dispatch(ProductActions.GetProducts());
+  getProducts(): void {
+    this.store.dispatch(ProductActions.GetProducts());
   }
 
   hasProducts() {
@@ -34,6 +54,67 @@ export class ProductsComponent implements OnInit {
   }
 
   addToCart(productId, product: Product) {
-    // this.storeShopping.dispatch(ShoppingCartActions.AddProductCart, productId);
+    if (!this.currentUser) {
+      return this.showModalLogin();
+    }
+
+    if (!this.cart) {
+      this.store.dispatch(
+        ShoppingCartActions.AddProductCartWhenNotExistShoppingCart({
+          product,
+        })
+      );
+      return this.router.navigateByUrl('/shopping-cart');
+    }
+
+    let productCart: ProductCart = {
+      productId,
+      productName: product.name,
+      price: product.price,
+      quantity: 1,
+      total: product.price * 1,
+      cartId: this.cart.id,
+    };
+
+    if (this.productsCart) {
+      const productExist = this.productsCart.find(
+        (item) => item.productId === product.id
+      );
+      if (productExist) {
+        productCart.quantity += 1;
+        productCart.total = productCart.quantity * productCart.price;
+        this.store.dispatch(
+          ShoppingCartActions.UpdateProductCart({ productCart })
+        );
+      } else {
+        this.store.dispatch(
+          ShoppingCartActions.AddProductCart({ productCart })
+        );
+      }
+    }
+    this.router.navigateByUrl('/shopping-cart');
+  }
+
+  private showModalLogin(): void {
+    const modal: NzModalRef = this.modal.create({
+      nzTitle: 'Not logged in!',
+      nzContent: 'you must be logged in to add to cart ',
+      nzFooter: [
+        {
+          label: 'Close',
+          shape: 'round',
+          onClick: () => modal.destroy(),
+        },
+        {
+          label: 'Sign In',
+          type: 'primary',
+          onClick: () => {
+            this.router.navigateByUrl('auth/login');
+            modal.destroy();
+            // this.modal.confirm({ nzTitle: 'Confirm Modal Title', nzContent: 'Confirm Modal Content' })
+          },
+        },
+      ],
+    });
   }
 }

@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { Cart } from 'src/core/models/cart.model';
 import { ProductCart } from 'src/core/models/product-cart.model';
+import { Product } from 'src/core/models/product.model';
 
 export enum ShoppingCartActionTypes {
   GetShoppingCart = '[ShoppingCart] GetShoppingCart',
@@ -9,6 +10,9 @@ export enum ShoppingCartActionTypes {
   AddShoppingCart = '[ShoppingCart] AddShoppingCart',
   AddShoppingCartSuccess = '[ShoppingCart] AddShoppingCartSuccess',
   AddShoppingCartFailure = '[ShoppingCart] AddShoppingCartFailure',
+  AddProductCartWhenNotExistShoppingCart = '[ShoppingCart] AddProductCartWhenNotExistShoppingCart',
+  AddProductCartWhenNotExistShoppingCartSuccess = '[ShoppingCart] AddProductCartWhenNotExistShoppingCartSuccess',
+  AddProductCartWhenNotExistShoppingCartFailure = '[ShoppingCart] AddProductCartWhenNotExistShoppingCartFailure',
   CompleteShoppingCart = '[ShoppingCart] CompleteShoppingCart',
   CompleteShoppingCartSuccess = '[ShoppingCart] CompleteShoppingCartSuccess',
   CompleteShoppingCartFailure = '[ShoppingCart] CompleteShoppingCartFailure',
@@ -27,8 +31,7 @@ export enum ShoppingCartActionTypes {
 }
 
 export const GetShoppingCart = createAction(
-  ShoppingCartActionTypes.GetShoppingCart,
-  props<{ userId: string }>()
+  ShoppingCartActionTypes.GetShoppingCart
 );
 export const GetShoppingCartSuccess = createAction(
   ShoppingCartActionTypes.GetShoppingCartSuccess,
@@ -48,6 +51,20 @@ export const AddShoppingCartSuccess = createAction(
 );
 export const AddShoppingCartFailure = createAction(
   ShoppingCartActionTypes.AddShoppingCartFailure,
+  props<{ error: any }>()
+);
+
+export const AddProductCartWhenNotExistShoppingCart = createAction(
+  ShoppingCartActionTypes.AddProductCartWhenNotExistShoppingCart,
+  props<{product: Product}>()
+);
+
+export const AddProductCartWhenNotExistShoppingCartSuccess = createAction(
+  ShoppingCartActionTypes.AddProductCartWhenNotExistShoppingCartSuccess,
+  props<{ cart: Cart, productCart: ProductCart }>()
+);
+export const AddProductCartWhenNotExistShoppingCartFailure = createAction(
+  ShoppingCartActionTypes.AddProductCartWhenNotExistShoppingCartFailure,
   props<{ error: any }>()
 );
 

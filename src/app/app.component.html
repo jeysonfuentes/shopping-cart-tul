@@ -10,10 +10,12 @@
     <div class="header__right-side">
       <a routerLink="shopping-cart"><i nz-icon nzType="shopping-cart" nzTheme="outline"></i> Cart</a>
       <div class="header__auth">
-        <a routerLink="auth/login">Sign In</a> / <a routerLink="auth/register">Sign Up</a>
-        <div class="header__user" *ngIf="false">
-          <span>Nombre Usuario</span>
-          <a href=""> <i nz-icon nzType="logout" nzTheme="outline"></i></a>
+        <div *ngIf="!hasLogged">
+          <a routerLink="auth/login" >Sign In</a> / <a routerLink="auth/register">Sign Up</a>
+        </div>
+        <div class="header__user" *ngIf="hasLogged">
+          <span>{{nickName}} </span>
+          <a (click)="logOut()"> <i nz-icon nzType="logout" nzTheme="outline"></i></a>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
-<div class="wrapper">
-  <div class="register">
-    <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+<div nz-row class="wrapper">
+  <div nz-col nzSpan="12" nzOffset="6" class="register">
+    <h3>Register</h3>
+    <form nz-form [formGroup]="registerForm" (ngSubmit)="register()">
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">E-mail</nz-form-label>
         <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid E-mail!">
@@ -27,7 +28,7 @@
           </ng-template>
         </nz-form-control>
       </nz-form-item>
-      <nz-form-item nz-row class="register-area">
+      <nz-form-item nz-row class="register__area">
         <nz-form-control [nzSpan]="14" [nzOffset]="6">
           <label nz-checkbox formControlName="agree">
             <span>
@@ -37,7 +38,7 @@
           </label>
         </nz-form-control>
       </nz-form-item>
-      <nz-form-item nz-row class="register-area">
+      <nz-form-item nz-row class="register__area">
         <nz-form-control [nzSpan]="14" [nzOffset]="6">
           <button nz-button nzType="primary">Register</button>
         </nz-form-control>

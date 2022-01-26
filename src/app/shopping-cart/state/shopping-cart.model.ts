@@ -7,7 +7,6 @@ export interface AppStateShoppingCart extends AppState {
 
 }
 export interface ShoppingCartState {
-  paginate: any;
   cart: Cart;
   productsCart: ProductCart[];
   loading: boolean;
@@ -16,7 +15,6 @@ export interface ShoppingCartState {
 }
 
 export const defaultShoppingCartState: ShoppingCartState = {
-  paginate: null,
   cart: null,
   productsCart: [],
   loading: false,

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Cart } from 'src/core/models/cart.model';
 import { AuthService } from '../firebase/auth/auth.service';
 import { FirestoreService } from '../firebase/firestore.service';
@@ -21,32 +21,32 @@ export class CartsService extends FirestoreService<Cart> {
     const currentUser = this.authService.getCurrentUser();
     return this.getByQueryFields([
       {
-        field: 'userId',
-        predicate: '==',
-        value: currentUser.uid,
-      },
-      {
         field: 'status',
         predicate: '==',
         value: 'pending',
       },
-    ]).pipe(map((response) => response));
+      {
+        field: 'userId',
+        predicate: '==',
+        value: currentUser.uid,
+      },
+    ]);
   }
 
   getUserCartComplete() {
     const currentUser = this.authService.getCurrentUser();
     return this.getByQueryFields([
       {
-        field: 'userId',
-        predicate: '==',
-        value: currentUser.id,
-      },
-      {
         field: 'status',
         predicate: '==',
-        value: 'completed',
+        value: 'complete',
       },
-    ]).pipe(map((result) => result));
+      {
+        field: 'userId',
+        predicate: '==',
+        value: currentUser.uid,
+      },
+    ]);
   }
 
   addCart(): Observable<Cart> {
@@ -57,7 +57,7 @@ export class CartsService extends FirestoreService<Cart> {
       total: 0,
       userId,
     };
-    return this.create(cart).pipe((result) => result);
+    return this.create(cart).pipe(tap(console.log));
   }
 
   updateCart(cart: Cart) {
@@ -65,7 +65,8 @@ export class CartsService extends FirestoreService<Cart> {
   }
 
   changeCartStatus(status: string, cart: Cart) {
-    cart.status = status;
-    return this.update(cart.id, cart);
+    const modifiedCart = { ...cart };
+    modifiedCart.status = status;
+    return this.update(cart.id, modifiedCart);
   }
 }
